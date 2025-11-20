@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { WalletConnect } from "@/components/WalletConnect";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { PresaleStats } from "@/components/PresaleStats";
@@ -9,6 +10,8 @@ import { TokenDetails } from "@/components/TokenDetails";
 import { AdminSettings } from "@/components/AdminSettings";
 import { AdminControls } from "@/components/AdminControls";
 import { UserPosition } from "@/components/UserPosition";
+import { Button } from "@/components/ui/button";
+import { Flame } from "lucide-react";
 import logo from "@/assets/provex-logo.png";
 
 const Index = () => {
@@ -31,7 +34,15 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground">On PulseChain</p>
               </div>
             </div>
-            <WalletConnect />
+            <div className="flex items-center gap-4">
+              <Link to="/sacrifice">
+                <Button variant="outline" className="gap-2">
+                  <Flame className="h-4 w-4" />
+                  Sacrifice
+                </Button>
+              </Link>
+              <WalletConnect />
+            </div>
           </div>
         </div>
       </header>

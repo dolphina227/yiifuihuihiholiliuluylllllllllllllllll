@@ -1,8 +1,20 @@
 import { useEffect, useState } from "react";
 import { useWeb3 } from "@/hooks/useWeb3";
-import { CONTRACTS, PRESALE_ABI, PULSECHAIN_CONFIG, USDC_DECIMALS } from "@/lib/constants";
-import { formatUnits } from "ethers";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  CONTRACTS,
+  PRESALE_ABI,
+  PULSECHAIN_CONFIG,
+  USDC_DECIMALS,
+} from "@/lib/constants";
+import { Contract, JsonRpcProvider, formatUnits } from "ethers";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Users, Search, ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,51 +26,66 @@ interface Participant {
   blockNumber: number;
 }
 
-export const ParticipantsTable = ({ refreshTrigger }: { refreshTrigger: number }) => {
-  const { provider } = useWeb3();
+export const ParticipantsTable = ({
+  refreshTrigger,
+}: {
+  refreshTrigger: number;
+}) => {
+  const { provider: walletProvider } = useWeb3();
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [filteredParticipants, setFilteredParticipants] = useState<Participant[]>([]);
+  const [filteredParticipants, setFilteredParticipants] = useState<Participant[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // RPC publik PulseChain (bisa dipindah ke .env)
+  const FALLBACK_RPC =
+    import.meta.env.VITE_PULSECHAIN_RPC ?? "https://rpc.pulsechain.com";
+
   useEffect(() => {
     const fetchParticipants = async () => {
-      if (!provider) {
-        setLoading(false);
-        return;
-      }
-
+      setLoading(true);
       try {
-        const presaleContract = new (await import("ethers")).Contract(
+        // kalau wallet connect → pakai walletProvider, kalau tidak → pakai RPC publik
+        const readProvider =
+          walletProvider ?? new JsonRpcProvider(FALLBACK_RPC);
+
+        const presaleContract = new Contract(
           CONTRACTS.presale,
           PRESALE_ABI,
-          provider
+          readProvider
         );
 
+        // filter event Buy(address indexed buyer, uint256 usdcIn, uint256 tokensOut)
         const filter = presaleContract.filters.Buy();
         const events = await presaleContract.queryFilter(filter, 0, "latest");
+
+        console.log("Buy events:", events.length);
 
         const participantsList: Participant[] = events.map((event: any) => ({
           buyer: event.args.buyer,
           usdcAmount: formatUnits(event.args.usdcIn, USDC_DECIMALS),
           tokenAmount: formatUnits(event.args.tokensOut, 18),
-          blockNumber: event.blockNumber,
+          blockNumber: Number(event.blockNumber),
         }));
 
-        // Sort by most recent first
+        // sort terbaru di atas
         participantsList.sort((a, b) => b.blockNumber - a.blockNumber);
 
         setParticipants(participantsList);
         setFilteredParticipants(participantsList);
       } catch (error) {
         console.error("Error fetching participants:", error);
+        setParticipants([]);
+        setFilteredParticipants([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchParticipants();
-  }, [provider, refreshTrigger]);
+  }, [walletProvider, FALLBACK_RPC, refreshTrigger]);
 
   useEffect(() => {
     if (searchQuery) {
@@ -71,12 +98,14 @@ export const ParticipantsTable = ({ refreshTrigger }: { refreshTrigger: number }
     }
   }, [searchQuery, participants]);
 
-  const formatAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+  const formatAddress = (address: string) =>
+    `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   const openExplorer = (address: string) => {
-    window.open(`${PULSECHAIN_CONFIG.blockExplorerUrl}/address/${address}`, "_blank");
+    window.open(
+      `${PULSECHAIN_CONFIG.blockExplorerUrl}/address/${address}`,
+      "_blank"
+    );
   };
 
   return (
@@ -89,7 +118,9 @@ export const ParticipantsTable = ({ refreshTrigger }: { refreshTrigger: number }
           <div>
             <h2 className="text-2xl font-bold">Presale Participants</h2>
             <p className="text-sm text-muted-foreground">
-              {loading ? "Loading..." : `${participants.length} total participants`}
+              {loading
+                ? "Loading..."
+                : `${participants.length} total participants`}
             </p>
           </div>
         </div>
@@ -111,8 +142,12 @@ export const ParticipantsTable = ({ refreshTrigger }: { refreshTrigger: number }
             <TableHeader>
               <TableRow className="bg-secondary/50">
                 <TableHead className="font-semibold">Buyer</TableHead>
-                <TableHead className="font-semibold text-right">USDC Amount</TableHead>
-                <TableHead className="font-semibold text-right">ProveX 2.0 Amount</TableHead>
+                <TableHead className="font-semibold text-right">
+                  USDC Amount
+                </TableHead>
+                <TableHead className="font-semibold text-right">
+                  ProveX 2.0 Amount
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -132,13 +167,21 @@ export const ParticipantsTable = ({ refreshTrigger }: { refreshTrigger: number }
                 ))
               ) : filteredParticipants.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                    {searchQuery ? "No participants found matching your search" : "No participants yet"}
+                  <TableCell
+                    colSpan={3}
+                    className="text-center py-8 text-muted-foreground"
+                  >
+                    {searchQuery
+                      ? "No participants found matching your search"
+                      : "No participants yet"}
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredParticipants.map((participant, index) => (
-                  <TableRow key={index} className="hover:bg-secondary/30 transition-colors">
+                  <TableRow
+                    key={index}
+                    className="hover:bg-secondary/30 transition-colors"
+                  >
                     <TableCell>
                       <button
                         onClick={() => openExplorer(participant.buyer)}
@@ -149,16 +192,22 @@ export const ParticipantsTable = ({ refreshTrigger }: { refreshTrigger: number }
                       </button>
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      {parseFloat(participant.usdcAmount).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}{" "}
+                      {parseFloat(participant.usdcAmount).toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      )}{" "}
                       USDC
                     </TableCell>
                     <TableCell className="text-right font-medium text-primary">
-                      {parseFloat(participant.tokenAmount).toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                      })}{" "}
+                      {parseFloat(participant.tokenAmount).toLocaleString(
+                        undefined,
+                        {
+                          maximumFractionDigits: 2,
+                        }
+                      )}{" "}
                       ProveX 2.0
                     </TableCell>
                   </TableRow>

@@ -9,7 +9,6 @@ import { InfoSection } from "@/components/InfoSection";
 import { TokenDetails } from "@/components/TokenDetails";
 import { AdminSettings } from "@/components/AdminSettings";
 import { AdminControls } from "@/components/AdminControls";
-import { UserPosition } from "@/components/UserPosition";
 import { Button } from "@/components/ui/button";
 import { Flame } from "lucide-react";
 import logo from "@/assets/provex-logo.png";
@@ -77,7 +76,7 @@ const Index = () => {
         </div>
 
         {/* User Position */}
-        <UserPosition refreshTrigger={refreshTrigger} onSuccess={handleBuySuccess} />
+
 
         {/* Participants Table */}
         <ParticipantsTable refreshTrigger={refreshTrigger} />

@@ -185,7 +185,7 @@ export const BuyPanel = ({ onBuySuccess }: BuyPanelProps) => {
           disabled={!canBuy || isLoading || !usdcAmount || parseFloat(usdcAmount) < PRESALE_CONFIG.minBuyUSDC}
           className="w-full h-12 text-lg gradient-bg"
         >
-          {isLoading ? "Processing..." : "Buy ProveX 2.0 Presale"}
+          {isLoading ? "Processing..." : "Buy ProveX 2.0 "}
         </Button>
 
         <div className="text-xs text-muted-foreground text-center">

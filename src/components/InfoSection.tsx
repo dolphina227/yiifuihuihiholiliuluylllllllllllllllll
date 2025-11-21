@@ -67,7 +67,7 @@ export const InfoSection = () => {
             <h3 className="font-semibold">Future Airdrops</h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            Presale participants will receive future $ProveX airdrops as a reward for early support.
+            Presale participants and holders will receive future $ProveX airdrops as a reward for early support.
           </p>
         </div>
 

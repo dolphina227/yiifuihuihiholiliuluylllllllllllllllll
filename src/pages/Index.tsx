@@ -30,7 +30,7 @@ const Index = () => {
             <div className="flex items-center gap-4">
               <img src={logo} alt="ProveX 2.0" className="h-12 w-12" />
               <div>
-                <h1 className="text-xl font-bold gradient-text">ProveX 2.0 Presale</h1>
+                <h1 className="text-xl font-bold gradient-text">ProveX 2.0</h1>
                 <p className="text-xs text-muted-foreground">On PulseChain</p>
               </div>
             </div>
@@ -56,7 +56,7 @@ const Index = () => {
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Join the ProveX 2.0 presale on PulseChain. 50% supply for presale, 50% for LP. If hardcap is not
-              reached, funds will be refunded. Future $ProveX airdrops for presale participants.
+              reached, funds will be refunded. Future $ProveX airdrops for presale participants and holders.
             </p>
           </div>
         </div>

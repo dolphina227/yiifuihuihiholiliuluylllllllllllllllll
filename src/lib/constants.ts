@@ -46,28 +46,37 @@ export const TAX_INFO = {
 
 // Contract ABIs
 export const PRESALE_ABI = [
-  "function usdc() external view returns (address)",
-  "function token() external view returns (address)",
-  "function treasury() external view returns (address)",
-  "function PRESALE_TOKENS() external view returns (uint256)",
+  // write functions
+  "function buy(uint256 usdcAmount) external",
+  "function setLive(bool _live) external",
+  "function sweepUnsoldTokens(address to) external",
+  "function transferOwnership(address newOwner) external",
+  "function renounceOwnership() external",
+
+  // view functions
   "function HARD_CAP_USDC() external view returns (uint256)",
   "function MIN_USDC() external view returns (uint256)",
+  "function PRESALE_TOKENS() external view returns (uint256)",
   "function TOKENS_PER_USDC() external view returns (uint256)",
   "function soldTokens() external view returns (uint256)",
   "function totalUsdcIn() external view returns (uint256)",
+  "function USDC_DECIMALS() external view returns (uint8)",
+
   "function isLive() external view returns (bool)",
-  "function isFinalized() external view returns (bool)",
-  "function success() external view returns (bool)",
-  "function contributions(address user) external view returns (uint256)",
-  "function purchasedTokens(address user) external view returns (uint256)",
-  "function buy(uint256 usdcAmount) external",
-  "function finalize() external",
-  "function claimTokens() external",
-  "function claimRefund() external",
-  "function setLive(bool live) external",
   "function isOngoing() external view returns (bool)",
+
+  "function token() external view returns (address)",
+  "function usdc() external view returns (address)",
+  "function treasury() external view returns (address)",
+  "function owner() external view returns (address)",
+
+  // events
   "event Buy(address indexed buyer, uint256 usdcIn, uint256 tokensOut)",
+  "event SetLive(bool live)",
+  "event SweepUnsold(address indexed to, uint256 amount)",
+  "event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)"
 ];
+
 
 export const ERC20_ABI = [
   "function approve(address spender, uint256 amount) external returns (bool)",

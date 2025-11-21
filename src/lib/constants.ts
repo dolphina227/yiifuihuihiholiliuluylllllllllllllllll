@@ -8,8 +8,8 @@ export const PULSECHAIN_CONFIG = {
 
 // Contract Addresses
 export const CONTRACTS = {
-  presale: "0x10fA1126291D5576A2a2fD2Ae5c9125F663f726e",
-  token: "0xD6c9B6Ba58c29Db06f1ab375Cb820f166C41e77D",
+  presale: "0x5Fe9722e445a190220B48CCb101455EC34395699",
+  token: "0x9a63c7Dd7Ec7EAc8dd787f10635006D2C9EDd902",
   usdc: "0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07",
 };
 

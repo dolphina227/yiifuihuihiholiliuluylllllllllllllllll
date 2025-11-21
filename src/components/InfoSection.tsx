@@ -98,7 +98,7 @@ export const InfoSection = () => {
 
       <AddressCard
         label="Presale Contract"
-        address="0x10fA1126291D5576A2a2fD2Ae5c9125F663f726e"
+        address="0x5Fe9722e445a190220B48CCb101455EC34395699"
       />
         <AddressCard label="ProveX 2.0 Token" address={CONTRACTS.token} />
         <AddressCard label="USDC (PulseChain)" address={CONTRACTS.usdc} />
